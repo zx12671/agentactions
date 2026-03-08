@@ -39,15 +39,27 @@ def generate_quote_style_text(gemini_api_key: str, model: str) -> str:
         f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         f"?key={gemini_api_key}"
     )
+    today = datetime.now()
+    date_str = today.strftime("%Y年%m月%d日")
+    weekday = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"][today.weekday()]
+    month_day = today.strftime("%m月%d日")
+
     prompt = (
-        "请生成一段中文“毛泽东语录风格”的原创短文（80-140字），"
-        "主题是今日反思与行动，可以直接引用真实历史原句，"
-        "结尾再补一句简短的今日行动口号。"
+        f"今天是{date_str}，{weekday}。\n"
+        f'请你先简要回顾"历史上的{month_day}"发生过的一件有影响力的事件'
+        f"（中国或世界均可），"
+        f'然后以此为引子，用"毛泽东语录风格"写一段原创短文（120-200字）。\n'
+        f"要求：\n"
+        f"- 可以引用毛泽东的真实名句并加以发挥\n"
+        f"- 将历史事件与今日反思、行动联系起来\n"
+        f"- 语言铿锵有力，富有感召力\n"
+        f"- 结尾以一句简短有力的今日行动口号收束\n"
+        f"- 请直接输出正文，不要加标题或格式标记"
     )
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
-            "temperature": 0.8,
+            "temperature": 0.9,
             "maxOutputTokens": 8192,
             "thinkingConfig": {"thinkingBudget": 1024},
         },
