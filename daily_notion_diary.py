@@ -46,7 +46,11 @@ def generate_quote_style_text(gemini_api_key: str, model: str) -> str:
     )
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.8, "maxOutputTokens": 300},
+        "generationConfig": {
+            "temperature": 0.8,
+            "maxOutputTokens": 8192,
+            "thinkingConfig": {"thinkingBudget": 1024},
+        },
     }
     headers = {"Content-Type": "application/json"}
     data = http_json(url, "POST", headers, payload)
