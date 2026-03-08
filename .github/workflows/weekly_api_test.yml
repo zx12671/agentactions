@@ -1,0 +1,25 @@
+name: Weekly API Token Test
+
+on:
+  schedule:
+    # 每周一北京时间早上 9:00 (UTC 1:00)
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+jobs:
+  api-smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run API connectivity tests
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python test_api_tokens.py
