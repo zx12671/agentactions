@@ -1,9 +1,9 @@
-name: Weekly API Token Test
+name: Daily API Token Test
 
 on:
   schedule:
-    # 每周一北京时间早上 9:00 (UTC 1:00)
-    - cron: "0 1 * * 1"
+    # 每天北京时间早上 9:00 (UTC 1:00)
+    - cron: "0 1 * * *"
   workflow_dispatch:
 
 jobs:
