@@ -1,0 +1,24 @@
+name: Daily Notion Diary
+
+on:
+  schedule:
+    # 每天北京时间早上 8:00 (UTC 0:00)
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  generate-diary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate diary and push to Notion
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python daily_notion_diary.py
