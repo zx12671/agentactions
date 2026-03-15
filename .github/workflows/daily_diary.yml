@@ -16,9 +16,23 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Generate diary and push to Notion
+      - name: Generate diary, push to Notion and write daily.json
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python daily_notion_diary.py
+
+      - name: Install CloudBase CLI
+        run: npm install -g @cloudbase/cli
+
+      - name: Login CloudBase
+        env:
+          TCB_SECRET_ID: ${{ secrets.TCB_SECRET_ID }}
+          TCB_SECRET_KEY: ${{ secrets.TCB_SECRET_KEY }}
+        run: tcb login --apiKeyId "$TCB_SECRET_ID" --apiKey "$TCB_SECRET_KEY"
+
+      - name: Deploy to CloudBase Static Hosting
+        env:
+          COS_SDK_KEEPALIVE: "false"
+        run: tcb hosting deploy ./public -e ${{ secrets.TCB_ENV_ID }}
