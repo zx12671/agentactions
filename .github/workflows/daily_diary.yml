@@ -2,8 +2,9 @@ name: Daily Notion Diary
 
 on:
   schedule:
-    # 每天北京时间早上 8:00 (UTC 0:00)
-    - cron: "0 0 * * *"
+    # 北京时间约 7:17 AM (UTC 23:17 前一天)
+    # 用非整点分钟 + 避开 UTC 0:00 高峰，预期实际执行在北京 7:30~8:00
+    - cron: "17 23 * * *"
   workflow_dispatch:
 
 jobs:
