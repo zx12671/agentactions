@@ -10,6 +10,16 @@ from urllib import error, request
 NOTION_API_VERSION = "2022-06-28"
 DEFAULT_MODEL = "gemini-3.1-pro-preview"
 
+THEME_MAP = {
+    0: ("矛盾论", "抓主要矛盾、分清主次轻重，代表作《矛盾论》，名句方向如"事物发展的根本原因在于事物内部的矛盾性""),
+    1: ("实践论", "没有调查就没有发言权、实践出真知，代表作《实践论》《反对本本主义》"),
+    2: ("论持久战", "战略上藐视敌人战术上重视敌人、积小胜为大胜，代表作《论持久战》"),
+    3: ("为人民服务", "完全彻底地为人民服务、团队协作利他精神，代表作《为人民服务》《纪念白求恩》"),
+    4: ("批评与自我批评", "流水不腐户枢不蠹、反思复盘自我革新，代表作《论联合政府》"),
+    5: ("乐观主义", "我们的同志在困难的时候要看到成绩要看到光明、前途是光明的道路是曲折的"),
+    6: ("辩证法", "好事可以变坏事坏事可以变好事、一分为二地看问题"),
+}
+
 
 def require_env(name: str) -> str:
     value = os.getenv(name, "").strip()
@@ -41,25 +51,33 @@ def generate_quote_style_text(gemini_api_key: str, model: str) -> str:
     )
     today = datetime.now()
     date_str = today.strftime("%Y年%m月%d日")
-    weekday = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"][today.weekday()]
+    weekday_names = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
+    weekday = weekday_names[today.weekday()]
     month_day = today.strftime("%m月%d日")
 
+    theme_name, theme_desc = THEME_MAP[today.weekday()]
+
     prompt = (
-        f"今天是{date_str}，{weekday}。\n"
+        f"今天是{date_str}，{weekday}。\n\n"
+        f"今天的思想主题是「{theme_name}」——{theme_desc}。请围绕这一思想维度展开。\n\n"
         f'请你先简要回顾"历史上的{month_day}"发生过的一件有影响力的事件'
-        f"（中国或世界均可），"
-        f'然后以此为引子，用"毛泽东语录风格"写一段原创短文（120-200字）。\n'
+        f"（中国或世界均可），然后以此为引子，"
+        f"用毛泽东思想的视角写一段原创短文（150-250字）。\n\n"
         f"要求：\n"
-        f"- 可以引用毛泽东的真实名句并加以发挥\n"
-        f"- 将历史事件与今日反思、行动联系起来\n"
+        f"- 围绕今日思想主题「{theme_name}」进行阐发\n"
+        f"- 引用毛泽东不太常见但精彩的真实名句（避免使用以下高频句："
+        f"「丢掉幻想，准备斗争」「世上无难事，只要肯登攀」"
+        f"「一切反动派都是纸老虎」「愚公移山」「一万年太久，只争朝夕」）\n"
+        f"- 将历史事件与今日思想主题联系起来\n"
         f"- 语言铿锵有力，富有感召力\n"
+        f"- 最后给出一条可以直接用于今天工作或生活中的具体行动启示\n"
         f"- 结尾以一句简短有力的今日行动口号收束\n"
         f"- 请直接输出正文，不要加标题或格式标记"
     )
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
-            "temperature": 0.9,
+            "temperature": 0.75,
             "maxOutputTokens": 8192,
             "thinkingConfig": {"thinkingBudget": 1024},
         },
@@ -144,8 +162,10 @@ def main() -> int:
         model = os.getenv("GEMINI_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL
 
         quote_text = generate_quote_style_text(gemini_api_key, model)
-        today = datetime.now().strftime("%Y-%m-%d")
-        title = f"{today} 每日日记"
+        today_dt = datetime.now()
+        today = today_dt.strftime("%Y-%m-%d")
+        theme_name, _ = THEME_MAP[today_dt.weekday()]
+        title = f"{today} 每日哲思 · {theme_name}"
 
         db_schema = get_database_schema(notion_token, database_id)
         title_prop = pick_title_property_name(db_schema)
