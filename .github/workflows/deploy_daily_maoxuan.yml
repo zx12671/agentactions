@@ -1,0 +1,38 @@
+# 独立于 daily_diary 的部署流水线：将 public/ 部署到 CloudBase 静态托管
+# 需在仓库 Settings → Secrets 中配置：TCB_SECRET_ID、TCB_SECRET_KEY、TCB_ENV_ID
+name: Deploy 每日毛选 to CloudBase
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+    paths:
+      - "public/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install CloudBase CLI
+        run: npm install -g @cloudbase/cli
+
+      - name: Login CloudBase
+        env:
+          TCB_SECRET_ID: ${{ secrets.TCB_SECRET_ID }}
+          TCB_SECRET_KEY: ${{ secrets.TCB_SECRET_KEY }}
+        run: tcb login --apiKeyId "$TCB_SECRET_ID" --apiKey "$TCB_SECRET_KEY"
+
+      - name: Deploy to CloudBase Static Hosting
+        env:
+          # 避免大量文件时 socket hang up
+          COS_SDK_KEEPALIVE: "false"
+        run: tcb hosting deploy ./public -e ${{ secrets.TCB_ENV_ID }}
