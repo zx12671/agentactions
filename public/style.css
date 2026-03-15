@@ -1,0 +1,143 @@
+/* 每日毛选 · 展示页样式 */
+
+:root {
+  --color-bg: #faf9f6;
+  --color-paper: #fffef9;
+  --color-ink: #1a1a1a;
+  --color-muted: #5c5c5c;
+  --color-accent: #8b4513;
+  --font-serif: "Noto Serif SC", "Source Han Serif CN", "SimSun", serif;
+  --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --measure: 42rem;
+  --space-s: 0.5rem;
+  --space-m: 1rem;
+  --space-l: 1.5rem;
+  --space-xl: 2.5rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 18px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-serif);
+  color: var(--color-ink);
+  background: var(--color-bg);
+  line-height: 1.75;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main {
+  width: 100%;
+  max-width: var(--measure);
+  padding: var(--space-xl) var(--space-l);
+  flex: 1;
+}
+
+/* 站点标题 */
+.site-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-l);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.site-title {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+/* 内容区：有数据时的版式 */
+.content-card {
+  background: var(--color-paper);
+  padding: var(--space-xl);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.content-date {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: var(--space-s);
+  letter-spacing: 0.05em;
+}
+
+.content-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 var(--space-l);
+  color: var(--color-ink);
+}
+
+.content-body {
+  font-size: 1rem;
+  white-space: pre-wrap;
+  margin: 0;
+  color: var(--color-ink);
+}
+
+/* 无内容时的占位 */
+.placeholder {
+  text-align: center;
+  padding: var(--space-xl) var(--space-l);
+  color: var(--color-muted);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+}
+
+.placeholder-icon {
+  font-size: 2rem;
+  margin-bottom: var(--space-m);
+  opacity: 0.6;
+}
+
+/* 加载中 */
+.loading {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--color-muted);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+}
+
+/* 页脚 */
+.site-footer {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-l);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 16px;
+  }
+
+  .main {
+    padding: var(--space-l) var(--space-m);
+  }
+
+  .content-card {
+    padding: var(--space-l);
+  }
+}

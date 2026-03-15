@@ -1,0 +1,19 @@
+[project]
+name = "agentactions"
+version = "0.1.0"
+description = "Daily notion diary and maoxuan static site"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+# 运行测试（任选其一）：
+#   PYTHONPATH=. python3 -m unittest discover -s tests -v
+#   pytest tests/ -v   (需安装: pip install pytest)

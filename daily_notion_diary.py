@@ -6,6 +6,8 @@ from datetime import datetime
 from typing import Optional
 from urllib import error, request
 
+from daily_maoxuan_export import write_daily_json
+
 
 NOTION_API_VERSION = "2022-06-28"
 DEFAULT_MODEL = "gemini-3.1-pro-preview"
@@ -184,6 +186,11 @@ def main() -> int:
         print(f"Page ID: {page.get('id', 'unknown')}")
         if page.get("url"):
             print(f"Page URL: {page['url']}")
+
+        output_dir = os.getenv("DAILY_MAOXUAN_PUBLIC_DIR", "public")
+        written = write_daily_json(output_dir, date=today, title=title, body=quote_text)
+        print(f"Wrote daily content to: {written}")
+
         return 0
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)

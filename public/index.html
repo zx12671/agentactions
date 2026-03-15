@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>每日毛选</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <main class="main">
+    <header class="site-header">
+      <h1 class="site-title">每日毛选</h1>
+    </header>
+
+    <div id="app">
+      <div class="loading" id="loading">正在加载…</div>
+      <div class="placeholder" id="placeholder" hidden>
+        <div class="placeholder-icon">📖</div>
+        <p>今日内容尚未更新</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">请稍后再来查看。</p>
+      </div>
+      <article class="content-card" id="content" hidden>
+        <p class="content-date" id="content-date"></p>
+        <h2 class="content-title" id="content-title"></h2>
+        <div class="content-body" id="content-body"></div>
+      </article>
+    </div>
+
+    <footer class="site-footer">
+      <p>静态展示 · 内容每日更新</p>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      var loading = document.getElementById('loading');
+      var placeholder = document.getElementById('placeholder');
+      var content = document.getElementById('content');
+      var contentDate = document.getElementById('content-date');
+      var contentTitle = document.getElementById('content-title');
+      var contentBody = document.getElementById('content-body');
+
+      function showLoading() {
+        loading.hidden = false;
+        placeholder.hidden = true;
+        content.hidden = true;
+      }
+
+      function showPlaceholder() {
+        loading.hidden = true;
+        placeholder.hidden = false;
+        content.hidden = true;
+      }
+
+      function showContent(data) {
+        loading.hidden = true;
+        placeholder.hidden = true;
+        content.hidden = false;
+        contentDate.textContent = data.date || '';
+        contentTitle.textContent = data.title || '';
+        contentBody.textContent = data.body || '';
+      }
+
+      fetch('./daily.json')
+        .then(function (res) {
+          if (!res.ok) throw new Error('not found');
+          return res.json();
+        })
+        .then(function (data) {
+          if (data && (data.title || data.body)) {
+            showContent(data);
+          } else {
+            showPlaceholder();
+          }
+        })
+        .catch(function () {
+          showPlaceholder();
+        });
+    })();
+  </script>
+</body>
+</html>
